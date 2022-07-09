@@ -1,0 +1,30 @@
+FROM php:8.1-apache
+
+WORKDIR /var/www/html
+
+#PHP Extensions
+RUN apt-get update && apt-get install -y \
+    curl \
+    g++ \
+    vim \
+    git \
+    unzip \
+    zip \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-install \
+    pdo_mysql
+
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+#APACHE conf
+COPY ./apache/000-default.conf /etc/apache2/sites-available/
+COPY ./apache/ports.conf /etc/apache2/
+
+RUN a2enmod rewrite headers
+
+#COMPOSER
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+#COMMAND with ownership and permissions to www-data group
+CMD chgrp www-data -R . && chmod g+rwx -R . && apache2-foreground
