@@ -18,6 +18,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/healthcheck', function () {
-    return 'OK';
+Route::prefix('cart')->group(function () {
+    Route::get('/healthcheck', function () {
+        return 'OK';
+    });
 });
+
+
