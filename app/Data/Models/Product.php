@@ -14,34 +14,36 @@ use Illuminate\Support\Carbon;
  * App\Data\Models\Product
  *
  * @property int $id
- * @property string $origin_identifier
+ * @property string|null $origin_identifier
  * @property string $title
- * @property float $price
- * @property mixed|null $details
+ * @property float $current_price
+ * @property string $currency_iso
+ * @property int|null $discount
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Collection|Order[] $orders
+ * @property-read int|null $orders_count
  * @method static Builder|Product newModelQuery()
  * @method static Builder|Product newQuery()
  * @method static Builder|Product query()
  * @method static Builder|Product whereCreatedAt($value)
- * @method static Builder|Product whereDetails($value)
+ * @method static Builder|Product whereCurrencyIso($value)
+ * @method static Builder|Product whereCurrentPrice($value)
+ * @method static Builder|Product whereDiscount($value)
  * @method static Builder|Product whereId($value)
  * @method static Builder|Product whereOriginIdentifier($value)
- * @method static Builder|Product wherePrice($value)
  * @method static Builder|Product whereTitle($value)
  * @method static Builder|Product whereUpdatedAt($value)
  * @mixin Eloquent
- * @property-read Collection|Order[] $orders
- * @property-read int|null $orders_count
  */
 class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["origin_identifier", "title", "details", "price"];
+    protected $fillable = ["currency_iso", "discount", "origin_identifier", "price", "title"];
 
     protected $casts = [
-        "details" => "array"
+        "details" => "array",
     ];
 
     public function orders(): BelongsToMany

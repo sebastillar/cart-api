@@ -22,14 +22,17 @@ use Illuminate\Support\Carbon;
  * @property float $tax_amount
  * @property float $total_amount
  * @property int|null $shipment_id
- * @property mixed|null $shipment_data
+ * @property array|null $shipment_data
  * @property int|null $billing_id
- * @property mixed|null $billing_data
+ * @property array|null $billing_data
  * @property int|null $payment_id
- * @property mixed|null $payment_data
- * @property mixed|null $notification_events
+ * @property array|null $payment_data
+ * @property array|null $notification_events
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Customer|null $customer
+ * @property-read Collection|Product[] $products
+ * @property-read int|null $products_count
  * @method static Builder|Order newModelQuery()
  * @method static Builder|Order newQuery()
  * @method static Builder|Order query()
@@ -50,9 +53,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Order whereTotalAmount($value)
  * @method static Builder|Order whereUpdatedAt($value)
  * @mixin Eloquent
- * @property-read Customer|null $customer
- * @property-read Collection|Product[] $products
- * @property-read int|null $products_count
  */
 class Order extends Model
 {

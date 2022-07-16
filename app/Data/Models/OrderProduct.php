@@ -15,7 +15,6 @@ use Illuminate\Support\Carbon;
  * @property int|null $order_id
  * @property int|null $product_id
  * @property int $quantity
- * @property float|null $discount
  * @property string $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -23,7 +22,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder|OrderProduct newQuery()
  * @method static Builder|OrderProduct query()
  * @method static Builder|OrderProduct whereCreatedAt($value)
- * @method static Builder|OrderProduct whereDiscount($value)
  * @method static Builder|OrderProduct whereId($value)
  * @method static Builder|OrderProduct whereOrderId($value)
  * @method static Builder|OrderProduct whereProductId($value)
@@ -38,5 +36,5 @@ class OrderProduct extends Model
 
     protected $table = "order_products";
 
-    protected $fillable = ["order_id", "product_id", "quantity", "discount", "status"];
+    protected $fillable = ["order_id", "product_id", "quantity"];
 }

@@ -28,8 +28,6 @@ class CreateOrderProductsTable extends Migration
                 ->onUpdate("cascade")
                 ->onDelete("set null");
             $table->unsignedInteger("quantity");
-            $table->float("discount")->nullable();
-            $table->string("status", "20");
             $table->timestamps();
         });
     }

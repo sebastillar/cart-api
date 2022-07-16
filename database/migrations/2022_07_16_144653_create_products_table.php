@@ -15,10 +15,11 @@ class CreateProductsTable extends Migration
     {
         Schema::create("products", function (Blueprint $table) {
             $table->id();
-            $table->string("origin_identifier", 20);
+            $table->string("origin_identifier", 20)->nullable();
             $table->string("title", 100);
-            $table->float("price");
-            $table->json("details")->nullable();
+            $table->float("current_price");
+            $table->string("currency_iso")->default("USD");
+            $table->integer("discount")->nullable();
             $table->timestamps();
         });
     }

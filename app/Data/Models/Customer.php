@@ -16,6 +16,8 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Collection|Order[] $orders
+ * @property-read int|null $orders_count
  * @method static Builder|Customer newModelQuery()
  * @method static Builder|Customer newQuery()
  * @method static Builder|Customer query()
@@ -23,8 +25,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Customer whereId($value)
  * @method static Builder|Customer whereUpdatedAt($value)
  * @mixin Eloquent
- * @property-read Collection|Order[] $orders
- * @property-read int|null $orders_count
  */
 class Customer extends Model
 {
