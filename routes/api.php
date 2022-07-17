@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,7 +41,7 @@ Route::prefix("cart")->group(function () {
         Route::prefix("/register")->group(function () {
             Route::patch("/shipment-address", [CustomerController::class, "updateShipmentAddress"]);
             Route::patch("/billing-address", [CustomerController::class, "updateBillingAddress"]);
-            Route::patch("/payment-method", [CustomerController::class, "updatePay"]);
+            Route::patch("/payment-method", [CustomerController::class, "updatePaymentMethod"]);
         });
 
         #CHECKOUT
