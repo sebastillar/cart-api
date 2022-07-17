@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Features\AddItemFeature;
+use App\Features\ListItemsFeature;
+use App\Features\RemoveItemFeature;
 use Lucid\Units\Controller;
 
 class CartController extends Controller
 {
     public function store($customer_id)
     {
-        return $this->serve(new AddItemFeature());
+        return $this->serve(AddItemFeature::class);
     }
 
     public function show($customer_id)
     {
-        return $this->serve(new ListItemsFeature());
+        return $this->serve(ListItemsFeature::class);
     }
 
     public function destroy($customer_id, $item_id)
     {
-        return $this->serve(new RemoveItemFeature());
+        return $this->serve(RemoveItemFeature::class);
     }
 }
