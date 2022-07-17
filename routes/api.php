@@ -24,14 +24,26 @@ Route::prefix("cart")->group(function () {
         return "OK";
     });
 
-    #CHECKOUT
-    Route::post("/checkout/{orderId}", [CheckoutController::class, "store"]);
+    #CART
+    Route::prefix("/{customer_id}")->group(function () {
+        #ITEMS
+        Route::prefix("/items")->group(function () {
+            Route::post("/", [CartController::class, "store"]);
+            Route::get("/", [CartController::class, "show"]);
+            Route::delete("/{item_id}", [CartController::class, "destroy"]);
+        });
 
-    #ORDERS
-    Route::prefix("orders")->group(function () {
-        Route::delete("/{orderId}/{productId}", [OrderController::class, "delete"]);
-        Route::get("/{orderId}", [OrderController::class, "show"]);
-        Route::post("/store", [OrderController::class, "store"]);
-        Route::put("/{orderId}", [OrderController::class, "update"]);
+        #REGISTER INFO
+        Route::prefix("/register")->group(function () {
+            Route::patch("/shipment-address", [CustomerController::class, "updateShipmentAddress"]);
+            Route::patch("/billing-address", [CustomerController::class, "updateBillingAddress"]);
+            Route::patch("/payment-method", [CustomerController::class, "updatePay"]);
+        });
+
+        #CHECKOUT
+        Route::post("/checkout", [CheckoutController::class, "store"]);
     });
+
+    #PRODUCT
+    Route::get("/products/search/{term}", [ProductController::class, "index"]);
 });
