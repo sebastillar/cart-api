@@ -9,23 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductRepository implements EloquentRepositoryInterface
 {
-    public function find(int $id): Model
-    {
-        // TODO: Implement find() method.
-    }
-
     public function findBy(string $column, int|string $value): Model
     {
         return Product::where($column, $value)->firstOrFail();
-    }
-
-    public function findAll(): Collection
-    {
-        // TODO: Implement findAll() method.
-    }
-
-    public function save(array $model): bool
-    {
     }
 
     public function update(Model $model, array $params): Model
@@ -38,8 +24,28 @@ class ProductRepository implements EloquentRepositoryInterface
         return Product::upsert($models, ["asin"], ["name", "link", "price"]);
     }
 
+    public function find(int $id): Model
+    {
+        // TODO: Implement find() method.
+    }
+
+    public function findAll(): Collection
+    {
+        // TODO: Implement findAll() method.
+    }
+
+    public function save(array $model): bool
+    {
+        // TODO: Implement save() method.
+    }
+
     public function create(array $model): Model
     {
         // TODO: Implement create() method.
+    }
+
+    public function destroy(int $id): bool
+    {
+        // TODO: Implement destroy() method.
     }
 }

@@ -2,7 +2,10 @@
 
 namespace App\Features;
 
+use App\Domains\Cart\Jobs\CalculateSubtotalJob;
+use App\Domains\Cart\Jobs\CheckIsEmptyJob;
 use App\Domains\Cart\Jobs\FindCartByCustomerJob;
+use App\Domains\Cart\Jobs\RespondWithJsonJob;
 use App\Domains\Cart\Requests\AddItem;
 use App\Domains\Item\DTOs\ItemDTO;
 use App\Domains\Item\Jobs\CreateItemJob;
@@ -26,28 +29,35 @@ class AddItemFeature extends Feature
             $product = $this->run(new FindProductByAsinJob($params["item"]["product"]["asin"]));
         } catch (Exception $exception) {
             if ($exception instanceof ModelNotFoundException) {
-                $params["rapid_api_key"] = $request->header("X-RapidAPI-Key");
-                $params["rapid_api_host"] = $request->header("X-RapidAPI-Host");
-                $params["term"] = $params["item"]["product"]["name"];
-
-                $fetchByTerm = FetchByTermDTO::fromArray($params);
-
-                $this->run(new FetchProductsFromExternalServiceOperation($fetchByTerm));
-
-                $product = $this->run(new FindProductByAsinJob($params["item"]["product"]["asin"]));
+                $product = $this->retrieveProductFromExternalAPi($params, $request);
             }
         }
 
         $itemDTO = new ItemDTO($params["item"]["quantity"], $product, $cart);
         $item = $this->run(new CreateItemJob(item: $itemDTO));
 
-        return Response::json(
-            [
-                "code" => 200,
-                "message" => $item->message(),
-                "data" => $item->toArray(),
-            ],
-            200
-        );
+        $this->run(new CalculateSubtotalJob($cart));
+
+        $results = [
+            "message" => $item->message(),
+            "data" => $item->toArray(),
+        ];
+        
+        $isEmpty = $this->run(new CheckIsEmptyJob($cart));
+
+        return $this->run(new RespondWithJsonJob($cart, $results, $isEmpty));
+    }
+
+    private function retrieveProductFromExternalAPi(array $params, AddItem $request)
+    {
+        $params["rapid_api_key"] = $request->header("X-RapidAPI-Key");
+        $params["rapid_api_host"] = $request->header("X-RapidAPI-Host");
+        $params["term"] = $params["item"]["product"]["name"];
+
+        $fetchByTerm = FetchByTermDTO::fromArray($params);
+
+        $this->run(new FetchProductsFromExternalServiceOperation($fetchByTerm));
+
+        return $this->run(new FindProductByAsinJob($params["item"]["product"]["asin"]));
     }
 }

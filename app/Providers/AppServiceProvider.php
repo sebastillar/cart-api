@@ -8,6 +8,7 @@ use App\Data\Repositories\ProductHttpRepository;
 use App\Data\Repositories\ProductRepository;
 use App\Domains\Cart\Jobs\CalculateSubtotalJob;
 use App\Domains\Cart\Jobs\FindCartByCustomerJob;
+use App\Domains\Cart\Jobs\RemoveItemFromCartJob;
 use App\Domains\Item\Jobs\CreateItemJob;
 use App\Domains\Product\Jobs\CreateProductsFromArrayJob;
 use App\Domains\Product\Jobs\FetchProductsByTermJob;
@@ -46,6 +47,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bindMethod(CalculateSubtotalJob::class . "@handle", function ($job, $app) {
             return $job->handle($app->make(CartRepository::class));
+        });
+
+        $this->app->bindMethod(RemoveItemFromCartJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(ItemRepository::class));
         });
     }
 

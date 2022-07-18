@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Data\Models\Cart;
-use App\Domains\Cart\Jobs\CalculateSubtotalJob;
 use Illuminate\Queue\InteractsWithQueue;
 
 class CartRetrievedListener
@@ -28,6 +27,5 @@ class CartRetrievedListener
      */
     public function handle($event)
     {
-        dd($event);
     }
 }
