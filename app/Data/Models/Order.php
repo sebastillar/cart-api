@@ -4,6 +4,7 @@ namespace App\Data\Models;
 
 use Barryvdh\LaravelIdeHelper\Eloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,18 +15,21 @@ use Illuminate\Support\Carbon;
  * App\Data\Models\Order
  *
  * @property int $id
- * @property string $status
+ * @property int $status_id
  * @property int $customer_id
  * @property float $subtotal_amount
  * @property float $shipment_amount
  * @property float $tax_amount
  * @property float $total_amount
- * @property mixed $items
- * @property mixed $billing_data
- * @property mixed $shipment_data
- * @property mixed $payment_data
+ * @property Collection|Item[] $items
+ * @property array $billing_data
+ * @property array $shipment_data
+ * @property array $payment_data
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Customer $customer
+ * @property-read int|null $items_count
+ * @property-read Status $status
  * @method static Builder|Order newModelQuery()
  * @method static Builder|Order newQuery()
  * @method static Builder|Order query()
@@ -37,16 +41,12 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Order wherePaymentData($value)
  * @method static Builder|Order whereShipmentAmount($value)
  * @method static Builder|Order whereShipmentData($value)
+ * @method static Builder|Order whereStatusId($value)
  * @method static Builder|Order whereSubtotalAmount($value)
  * @method static Builder|Order whereTaxAmount($value)
  * @method static Builder|Order whereTotalAmount($value)
  * @method static Builder|Order whereUpdatedAt($value)
  * @mixin Eloquent
- * @property-read Customer $customer
- * @property-read int|null $items_count
- * @method static Builder|Order whereStatus($value)
- * @property int $status_id
- * @method static Builder|Order whereStatusId($value)
  */
 class Order extends Model
 {

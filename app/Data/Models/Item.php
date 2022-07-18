@@ -2,6 +2,7 @@
 
 namespace App\Data\Models;
 
+use App\Events\ItemsAddedOrRemoved;
 use Barryvdh\LaravelIdeHelper\Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -15,11 +16,13 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property int $quantity
- * @property string $product_id
+ * @property int $product_id
  * @property int $checkoutable_id
  * @property string $checkoutable_type
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Model|Eloquent $checkoutable
+ * @property-read Product $product
  * @method static Builder|Item newModelQuery()
  * @method static Builder|Item newQuery()
  * @method static Builder|Item query()
@@ -31,8 +34,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Item whereQuantity($value)
  * @method static Builder|Item whereUpdatedAt($value)
  * @mixin Eloquent
- * @property-read Model|\Eloquent $orderable
- * @property-read Product $product
  */
 class Item extends Model
 {
@@ -41,6 +42,11 @@ class Item extends Model
     protected $table = "items";
 
     protected $fillable = ["quantity", "product_id", "checkoutable_id", "checkoutable_type"];
+
+    protected $dispatchesEvents = [
+        "saved" => ItemsAddedOrRemoved::class,
+        "updated" => ItemsAddedOrRemoved::class,
+    ];
 
     /**
      * Get all of the owning 'checkoutable' models.

@@ -3,6 +3,7 @@
 namespace App\Domains\Product\Jobs;
 
 use App\Interfaces\EloquentRepositoryInterface;
+use Illuminate\Database\Eloquent\Model;
 use Lucid\Units\Job;
 
 class FindProductByAsinJob extends Job
@@ -20,7 +21,7 @@ class FindProductByAsinJob extends Job
     /**
      * Execute the job.
      *
-     * @return void
+     * @return Model
      */
     public function handle(EloquentRepositoryInterface $repository)
     {

@@ -15,7 +15,9 @@ interface EloquentRepositoryInterface
 
     public function save(array $model): bool;
 
-    public function update(array $model): bool;
+    public function update(Model $model, array $params): Model;
+
+    public function updateAll(array $models): bool;
 
     public function create(array $model): Model;
 }
