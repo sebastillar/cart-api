@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -31,7 +32,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Item whereUpdatedAt($value)
  * @mixin Eloquent
  * @property-read Model|\Eloquent $orderable
- * @property-read \App\Data\Models\Product $product
+ * @property-read Product $product
  */
 class Item extends Model
 {
@@ -44,7 +45,7 @@ class Item extends Model
     /**
      * Get all of the owning 'checkoutable' models.
      */
-    public function orderable()
+    public function checkoutable(): MorphTo
     {
         return $this->morphTo();
     }

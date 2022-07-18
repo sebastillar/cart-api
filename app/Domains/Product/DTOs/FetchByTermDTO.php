@@ -2,13 +2,13 @@
 
 namespace App\Domains\Product\DTOs;
 
-class FetchByTerm
+class FetchByTermDTO
 {
     public function __construct(private string $term, private string $apiKey, private string $apiHost)
     {
     }
 
-    public static function fromArray(array $params): FetchByTerm
+    public static function fromArray(array $params): FetchByTermDTO
     {
         return new self($params["term"], $params["rapid_api_key"], $params["rapid_api_host"]);
     }

@@ -16,17 +16,12 @@ class CreateItemsTable extends Migration
         Schema::create("items", function (Blueprint $table) {
             $table->id();
             $table->integer("quantity")->unsigned();
-            $table->string("product_id", 50);
+            $table->foreignId("product_id", 50)->constrained();
             $table->unsignedBigInteger("checkoutable_id");
             $table->string("checkoutable_type");
             $table->timestamps();
 
-            $table
-                ->foreign("product_id")
-                ->references("asin")
-                ->on("products")
-                ->onUpdate("cascade")
-                ->onDelete("cascade");
+            $table->unique(["product_id", "checkoutable_id", "checkoutable_type"], "item_unique");
         });
     }
 

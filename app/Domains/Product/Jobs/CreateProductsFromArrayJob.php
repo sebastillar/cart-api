@@ -3,8 +3,7 @@
 namespace App\Domains\Product\Jobs;
 
 use App\Data\Models\Product;
-use App\Data\Repositories\ProductHttpRepository;
-use App\Interfaces\RepositoryHttpInterface;
+use App\Interfaces\EloquentRepositoryInterface;
 use Lucid\Units\Job;
 
 class CreateProductsFromArrayJob extends Job
@@ -24,9 +23,10 @@ class CreateProductsFromArrayJob extends Job
      *
      * @return array|Product[]
      */
-    public function handle(RepositoryHttpInterface $repository)
+    public function handle(EloquentRepositoryInterface $repository)
     {
         $this->products = $this->products["content"]["offers"];
+
         if (count($this->products) > $this->maxQtyToCreate) {
             $this->products = array_slice($this->products, 0, $this->maxQtyToCreate);
         }
@@ -40,8 +40,8 @@ class CreateProductsFromArrayJob extends Job
             ];
         }, $this->products);
 
-        return tap($products, function () use ($repository, $products) {
-            $repository->saveFromArray($products);
+        return tap($products, function () use ($products, $repository) {
+            $repository->update($products);
         });
     }
 }

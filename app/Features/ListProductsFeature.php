@@ -2,11 +2,9 @@
 
 namespace App\Features;
 
-use App\Domains\Http\Jobs\DecodeHttpResponseJob;
-use App\Domains\Product\DTOs\FetchByTerm;
-use App\Domains\Product\Jobs\CreateProductsFromArrayJob;
-use App\Domains\Product\Jobs\FetchProductsByTermJob;
+use App\Domains\Product\DTOs\FetchByTermDTO;
 use App\Domains\Product\Requests\ListProducts;
+use App\Operations\FetchProductsFromExternalServiceOperation;
 use Illuminate\Support\Facades\Response;
 use Lucid\Units\Feature;
 
@@ -18,19 +16,15 @@ class ListProductsFeature extends Feature
         $params["rapid_api_key"] = $request->header("X-RapidAPI-Key");
         $params["rapid_api_host"] = $request->header("X-RapidAPI-Host");
 
-        $fetchByTerm = FetchByTerm::fromArray($params);
+        $fetchByTerm = FetchByTermDTO::fromArray($params);
 
-        $httpResponse = $this->run(new FetchProductsByTermJob($fetchByTerm));
-
-        $products = $this->run(new DecodeHttpResponseJob($httpResponse));
-
-        $saved = $this->run(new CreateProductsFromArrayJob($products, 10));
+        $products = $this->run(new FetchProductsFromExternalServiceOperation($fetchByTerm));
 
         return Response::json(
             [
                 "code" => 200,
                 "message" => "List of products which has coincidence with the search term.",
-                "data" => $saved,
+                "data" => $products,
             ],
             200
         );
