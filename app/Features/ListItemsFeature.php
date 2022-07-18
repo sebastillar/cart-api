@@ -3,9 +3,10 @@
 namespace App\Features;
 
 use App\Domains\Cart\Jobs\CalculateSubtotalJob;
+use App\Domains\Cart\Jobs\CheckIsEmptyJob;
 use App\Domains\Cart\Jobs\FindCartByCustomerJob;
+use App\Domains\Cart\Jobs\RespondWithJsonJob;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
 use Lucid\Units\Feature;
 
 class ListItemsFeature extends Feature
@@ -18,16 +19,16 @@ class ListItemsFeature extends Feature
 
         $cart->refresh();
 
-        return Response::json(
-            [
-                "code" => 200,
-                "message" => "Showing items in the cart.",
-                "data" => [
-                    "items" => $cartItems["products"],
-                    "subtotal_amount" => $cart->subtotal_amount,
-                ],
+        $results = [
+            "message" => "Showing items in the cart.",
+            "data" => [
+                "items" => $cartItems["products"],
+                "subtotal_amount" => $cart->subtotal_amount,
             ],
-            200
-        );
+        ];
+
+        $isEmpty = $this->run(new CheckIsEmptyJob($cart));
+
+        return $this->run(new RespondWithJsonJob($cart, $results, $isEmpty));
     }
 }

@@ -11,17 +11,7 @@ class ItemRepository implements EloquentRepositoryInterface
 {
     public function find(int $id): Model
     {
-        // TODO: Implement find() method.
-    }
-
-    public function findBy(string $column, int|string $value): Model
-    {
-        // TODO: Implement findBy() method.
-    }
-
-    public function findAll(): Collection
-    {
-        // TODO: Implement findAll() method.
+        return Item::whereId($id)->firstOrFail();
     }
 
     public function update(Model $model, array $params): Model
@@ -44,6 +34,21 @@ class ItemRepository implements EloquentRepositoryInterface
     public function save(array $model): bool
     {
         // TODO: Implement save() method.
+    }
+
+    public function destroy(int $id): bool
+    {
+        return Item::destroy($id);
+    }
+
+    public function findBy(string $column, int|string $value): Model
+    {
+        // TODO: Implement findBy() method.
+    }
+
+    public function findAll(): Collection
+    {
+        // TODO: Implement findAll() method.
     }
 
     public function updateAll(array $models): bool

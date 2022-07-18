@@ -44,12 +44,11 @@ class CalculateSubtotalJob extends Job
             );
 
             $products[] = $itemAdded->toArray();
-
             $subtotalAmount += $value["quantity"] * $value["product"]["price"];
         }
 
         $cart["products"] = $products;
-
+        
         $repository->update($this->cart, ["subtotal_amount" => $subtotalAmount]);
 
         return $cart;
