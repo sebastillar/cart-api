@@ -34,7 +34,7 @@ class CreateItemJob extends Job
     {
         try {
             $model = $repository->create($this->item->toArray());
-            return new ItemAddedDTO($model);
+            return new ItemAddedDTO($model->product->asin, $model->quantity, $model->id, $model->product->price);
         } catch (Exception $exception) {
             if ($exception->getCode() !== "23000") {
                 throw $exception;

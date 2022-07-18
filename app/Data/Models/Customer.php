@@ -14,11 +14,13 @@ use Illuminate\Support\Carbon;
  * App\Data\Models\Customer
  *
  * @property int $id
- * @property mixed|null $shipment_address
- * @property mixed|null $billing_address
- * @property mixed|null $payment_method
+ * @property array|null $shipment_address
+ * @property array|null $billing_address
+ * @property array|null $payment_method
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Cart|null $cart
+ * @method static CustomerFactory factory(...$parameters)
  * @method static Builder|Customer newModelQuery()
  * @method static Builder|Customer newQuery()
  * @method static Builder|Customer query()
@@ -29,7 +31,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Customer whereShipmentAddress($value)
  * @method static Builder|Customer whereUpdatedAt($value)
  * @mixin Eloquent
- * @property-read Cart|null $cart
  */
 class Customer extends Model
 {

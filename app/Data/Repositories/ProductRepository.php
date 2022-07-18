@@ -28,9 +28,14 @@ class ProductRepository implements EloquentRepositoryInterface
     {
     }
 
-    public function update(array $model): bool
+    public function update(Model $model, array $params): Model
     {
-        return Product::upsert($model, ["asin"], ["name", "link", "price"]);
+        return Product::upsert($params, ["asin"], ["name", "link", "price"]);
+    }
+
+    public function updateAll(array $models): bool
+    {
+        return Product::upsert($models, ["asin"], ["name", "link", "price"]);
     }
 
     public function create(array $model): Model

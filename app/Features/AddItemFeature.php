@@ -21,6 +21,7 @@ class AddItemFeature extends Feature
         $params = $request->validated();
 
         $cart = $this->run(new FindCartByCustomerJob($params["customer_id"]));
+
         try {
             $product = $this->run(new FindProductByAsinJob($params["item"]["product"]["asin"]));
         } catch (Exception $exception) {
@@ -28,6 +29,7 @@ class AddItemFeature extends Feature
                 $params["rapid_api_key"] = $request->header("X-RapidAPI-Key");
                 $params["rapid_api_host"] = $request->header("X-RapidAPI-Host");
                 $params["term"] = $params["item"]["product"]["name"];
+
                 $fetchByTerm = FetchByTermDTO::fromArray($params);
 
                 $this->run(new FetchProductsFromExternalServiceOperation($fetchByTerm));

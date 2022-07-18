@@ -29,13 +29,20 @@ class CartRepository implements EloquentRepositoryInterface
         // TODO: Implement save() method.
     }
 
-    public function update(array $model): bool
+    public function update(Model $model, array $params): Model
     {
-        // TODO: Implement update() method.
+        return tap($model, function () use ($model, $params) {
+            Cart::whereId($model->id)->update($params);
+        });
     }
 
     public function create(array $model): Model
     {
         // TODO: Implement create() method.
+    }
+
+    public function updateAll(array $models): bool
+    {
+        // TODO: Implement updateAll() method.
     }
 }

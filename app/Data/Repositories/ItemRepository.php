@@ -24,9 +24,9 @@ class ItemRepository implements EloquentRepositoryInterface
         // TODO: Implement findAll() method.
     }
 
-    public function update(array $model): bool
+    public function update(Model $model, array $params): Model
     {
-        // TODO: Implement update() method.
+        return tap($model)->update($params);
     }
 
     public function create(array $model): Model
@@ -44,5 +44,10 @@ class ItemRepository implements EloquentRepositoryInterface
     public function save(array $model): bool
     {
         // TODO: Implement save() method.
+    }
+
+    public function updateAll(array $models): bool
+    {
+        // TODO: Implement updateAll() method.
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Data\Models;
 
+use App\Events\CartRetrieved;
 use Barryvdh\LaravelIdeHelper\Eloquent;
 use Database\Factories\CartFactory;
-use Database\Factories\CustomerFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -18,27 +18,32 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property int $customer_id
- * @property float $subtotal_amount
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Customer $customer
+ * @property-read Collection|Item[] $items
+ * @property-read int|null $items_count
+ * @method static CartFactory factory(...$parameters)
  * @method static Builder|Cart newModelQuery()
  * @method static Builder|Cart newQuery()
  * @method static Builder|Cart query()
  * @method static Builder|Cart whereCreatedAt($value)
  * @method static Builder|Cart whereCustomerId($value)
  * @method static Builder|Cart whereId($value)
- * @method static Builder|Cart whereSubtotalAmount($value)
  * @method static Builder|Cart whereUpdatedAt($value)
  * @mixin Eloquent
- * @property-read Customer $customer
- * @property-read Collection|Item[] $items
- * @property-read int|null $items_count
+ * @property float $subtotal_amount
+ * @method static Builder|Cart whereSubtotalAmount($value)
  */
 class Cart extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["customer_id", "subtotal_amount"];
+    protected $fillable = ["customer_id"];
+
+    protected $dispatchesEvents = [
+        "retrieved" => CartRetrieved::class,
+    ];
 
     protected static function newFactory(): CartFactory
     {

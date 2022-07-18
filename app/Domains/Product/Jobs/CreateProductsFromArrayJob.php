@@ -41,7 +41,7 @@ class CreateProductsFromArrayJob extends Job
         }, $this->products);
 
         return tap($products, function () use ($products, $repository) {
-            $repository->update($products);
+            $repository->updateAll($products);
         });
     }
 }
