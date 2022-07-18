@@ -27,4 +27,4 @@ RUN a2enmod rewrite headers
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 #COMMAND with ownership and permissions to www-data group
-CMD chgrp www-data -R . && chmod g+rwx -R . && apache2-foreground
+CMD chgrp www-data -R . && chmod g+rwx -R . && php artisan migrate && apache2-foreground
