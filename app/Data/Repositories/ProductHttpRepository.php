@@ -29,11 +29,4 @@ class ProductHttpRepository implements RepositoryHttpInterface
 
         return $response->body();
     }
-
-    public function saveFromArray(array $models): array
-    {
-        return tap($models, function ($models) {
-            Product::upsert($models, ["asin"], ["name", "link", "price"]);
-        });
-    }
 }

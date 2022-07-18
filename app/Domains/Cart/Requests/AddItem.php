@@ -24,7 +24,7 @@ class AddItem extends FormRequest
     public function rules()
     {
         return [
-            "customer_id" => "required|integer",
+            "customer_id" => "required|integer|exists:customers,id",
             "item.quantity" => "required|integer|min:1",
             "item.product" => "required",
             "item.product.name" => "required|string",

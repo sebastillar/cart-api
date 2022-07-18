@@ -2,8 +2,15 @@
 
 namespace App\Providers;
 
+use App\Data\Repositories\CartRepository;
+use App\Data\Repositories\ItemRepository;
 use App\Data\Repositories\ProductHttpRepository;
-use App\Interfaces\RepositoryHttpInterface;
+use App\Data\Repositories\ProductRepository;
+use App\Domains\Cart\Jobs\FindCartByCustomerJob;
+use App\Domains\Item\Jobs\CreateItemJob;
+use App\Domains\Product\Jobs\CreateProductsFromArrayJob;
+use App\Domains\Product\Jobs\FetchProductsByTermJob;
+use App\Domains\Product\Jobs\FindProductByAsinJob;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,7 +22,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(RepositoryHttpInterface::class, ProductHttpRepository::class);
+        $this->app->bindMethod(FindProductByAsinJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(ProductRepository::class));
+        });
+
+        $this->app->bindMethod(FetchProductsByTermJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(ProductHttpRepository::class));
+        });
+
+        $this->app->bindMethod(CreateProductsFromArrayJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(ProductRepository::class));
+        });
+
+        $this->app->bindMethod(FindCartByCustomerJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(CartRepository::class));
+        });
+
+        $this->app->bindMethod(CreateItemJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(ItemRepository::class));
+        });
     }
 
     /**
