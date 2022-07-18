@@ -28,6 +28,7 @@ class Product extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $guarded = [];
 
     public function items(): HasMany

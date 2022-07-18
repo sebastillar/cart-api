@@ -14,10 +14,10 @@ class CreateProductsTable extends Migration
     public function up()
     {
         Schema::create("products", function (Blueprint $table) {
-            $table->string("name", 100);
+            $table->string("name", 200);
             $table->string("asin", 50)->primary();
             $table->float("price");
-            $table->string("link");
+            $table->longText("link");
         });
     }
 
