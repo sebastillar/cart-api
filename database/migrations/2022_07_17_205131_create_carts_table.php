@@ -17,6 +17,7 @@ class CreateCartsTable extends Migration
             $table->id();
             $table
                 ->foreignId("customer_id")
+                ->unique()
                 ->constrained()
                 ->onUpdate("cascade")
                 ->onDelete("cascade");
