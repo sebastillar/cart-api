@@ -21,19 +21,12 @@ class ItemRepository implements EloquentRepositoryInterface
 
     public function create(array $model): Model
     {
-        $item = new Item(["quantity" => $model["quantity"]]);
-
-        $item->product()->associate($model["product"]);
-        $model["cart"]->items()->save($item);
-
-        return tap($item, function () use ($item) {
-            $item->save();
-        });
+        return Item::create($model);
     }
 
-    public function save(array $model): bool
+    public function save(Model $model): bool
     {
-        // TODO: Implement save() method.
+        return $model->save();
     }
 
     public function destroy(int $id): bool

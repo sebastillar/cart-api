@@ -22,35 +22,14 @@ class CalculateSubtotalJob extends Job
     /**
      * Execute the job.
      *
-     * @return array
+     * @return Cart
      */
     public function handle(EloquentRepositoryInterface $repository)
     {
-        $itemsWithProducts = $this->cart
-            ->items()
-            ->with("product")
-            ->get()
-            ->toArray();
+        $subtotalAmount = $this->cart->items()->sum("subtotal_item");
 
-        $products = [];
-        $subtotalAmount = 0;
-
-        foreach ($itemsWithProducts as $value) {
-            $itemAdded = new ItemAddedDTO(
-                $value["product"]["asin"],
-                $value["quantity"],
-                $value["id"],
-                $value["product"]["price"]
-            );
-
-            $products[] = $itemAdded->toArray();
-            $subtotalAmount += $value["quantity"] * $value["product"]["price"];
-        }
-
-        $cart["products"] = $products;
-        
         $repository->update($this->cart, ["subtotal_amount" => $subtotalAmount]);
 
-        return $cart;
+        return $this->cart;
     }
 }

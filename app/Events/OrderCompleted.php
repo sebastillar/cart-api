@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Data\Models\Order;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -19,7 +20,7 @@ class OrderCompleted
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public Order $order)
     {
         //
     }
@@ -27,10 +28,10 @@ class OrderCompleted
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return Channel|array
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new PrivateChannel("channel-name");
     }
 }

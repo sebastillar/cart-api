@@ -2,12 +2,14 @@
 
 namespace App\Data\Repositories;
 
+use App\Data\Models\Item;
 use App\Data\Models\Product;
+use App\Interfaces\EloquentAssociateRepository;
 use App\Interfaces\EloquentRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductRepository implements EloquentRepositoryInterface
+class ProductRepository implements EloquentRepositoryInterface, EloquentAssociateRepository
 {
     public function findBy(string $column, int|string $value): Model
     {
@@ -16,7 +18,7 @@ class ProductRepository implements EloquentRepositoryInterface
 
     public function update(Model $model, array $params): Model
     {
-        return Product::upsert($params, ["asin"], ["name", "link", "price"]);
+        //TODO:
     }
 
     public function updateAll(array $models): bool
@@ -34,11 +36,6 @@ class ProductRepository implements EloquentRepositoryInterface
         // TODO: Implement findAll() method.
     }
 
-    public function save(array $model): bool
-    {
-        // TODO: Implement save() method.
-    }
-
     public function create(array $model): Model
     {
         // TODO: Implement create() method.
@@ -47,5 +44,16 @@ class ProductRepository implements EloquentRepositoryInterface
     public function destroy(int $id): bool
     {
         // TODO: Implement destroy() method.
+    }
+
+    public function associateItem(Model $product, Model $item)
+    {
+        $item->subtotal_item = $item->quantity * $product->price;
+        return $product->items()->save($item);
+    }
+
+    public function save(Model $model): bool
+    {
+        // TODO: Implement save() method.
     }
 }

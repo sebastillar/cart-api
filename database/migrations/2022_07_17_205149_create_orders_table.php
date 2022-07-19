@@ -25,14 +25,15 @@ class CreateOrdersTable extends Migration
                 ->constrained()
                 ->onUpdate("cascade")
                 ->onDelete("cascade");
-            $table->float("subtotal_amount");
+            $table->json("items")->nullable();
+            $table->float("subtotal_amount")->default(0);
             $table->float("shipment_amount")->default(0);
             $table->float("tax_amount")->default(0);
-            $table->float("total_amount");
-            $table->json("items");
-            $table->json("billing_data");
-            $table->json("shipment_data");
-            $table->json("payment_data");
+            $table->float("total_amount")->default(0);
+            $table->unsignedBigInteger("payment_status")->default(0);
+            $table->json("billing_data")->nullable();
+            $table->json("shipment_data")->nullable();
+            $table->json("payment_data")->nullable();
             $table->timestamps();
         });
     }

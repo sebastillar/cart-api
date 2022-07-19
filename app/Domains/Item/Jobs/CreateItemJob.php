@@ -2,10 +2,6 @@
 
 namespace App\Domains\Item\Jobs;
 
-use App\Data\Models\Product;
-use App\Domains\Item\DTOs\ItemDTO;
-use App\Domains\Item\DTOs\ItemAddedDTO;
-use App\Domains\Item\DTOs\ItemNotAdded;
 use App\Interfaces\EloquentRepositoryInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +14,7 @@ class CreateItemJob extends Job
      *
      * @return void
      */
-    public function __construct(private ItemDTO $item)
+    public function __construct(protected int $quantity)
     {
         //
     }
@@ -27,19 +23,19 @@ class CreateItemJob extends Job
      * Execute the job.
      *
      * @param EloquentRepositoryInterface $repository
-     * @return ItemNotAdded|ItemAddedDTO
+     * @return Model
      * @throws Exception
      */
-    public function handle(EloquentRepositoryInterface $repository): ItemNotAdded|ItemAddedDTO
+    public function handle(EloquentRepositoryInterface $repository): Model
     {
+        $item = null;
         try {
-            $model = $repository->create($this->item->toArray());
-            return new ItemAddedDTO($model->product->asin, $model->quantity, $model->id, $model->product->price);
+            $item = $repository->create(["quantity" => $this->quantity]);
         } catch (Exception $exception) {
             if ($exception->getCode() !== "23000") {
                 throw $exception;
             }
         }
-        return new ItemNotAdded();
+        return $item;
     }
 }

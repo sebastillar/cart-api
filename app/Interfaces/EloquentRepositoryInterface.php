@@ -15,7 +15,7 @@ interface EloquentRepositoryInterface
 
     public function findAll(): Collection;
 
-    public function save(array $model): bool;
+    public function save(Model $model): bool;
 
     public function updateAll(array $models): bool;
 

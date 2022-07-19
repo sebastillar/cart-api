@@ -2,6 +2,10 @@
 
 namespace App\Domains\Cart\Jobs;
 
+use App\Data\Models\Cart;
+use App\Data\Models\Item;
+use App\Interfaces\EloquentAssociateRepository;
+use Illuminate\Database\Eloquent\Model;
 use Lucid\Units\Job;
 
 class AddNewItemJob extends Job
@@ -11,7 +15,7 @@ class AddNewItemJob extends Job
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(private Cart $cart, private Item $item)
     {
         //
     }
@@ -21,8 +25,13 @@ class AddNewItemJob extends Job
      *
      * @return void
      */
-    public function handle()
+    /**
+     * Execute the job.
+     *
+     * @return Model
+     */
+    public function handle(EloquentAssociateRepository $repository)
     {
-        //
+        return $repository->associateItem($this->cart, $this->item);
     }
 }
