@@ -47,9 +47,12 @@ class OrderObserver
     public function updating(Order $order)
     {
         $order->total_amount = $order->totalAmount();
+        /*
         if ($order->status->toArray()["description"] === OrderStatusesEnums::STATUS_COMPLETED) {
             Mail::to(env("MAIL_TO"))->send(new OrderCompletedMail());
+
         }
+        */
     }
 
     /**
