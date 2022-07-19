@@ -3,9 +3,15 @@
 namespace App\Observers;
 
 use App\Data\Models\Order;
+use App\Domains\Status\Enums\OrderStatusesEnums;
+use App\Interfaces\EloquentRepositoryInterface;
 
 class OrderObserver
 {
+    public function __construct(protected EloquentRepositoryInterface $repository)
+    {
+    }
+
     /**
      * Handle the Order "created" event.
      *
@@ -25,7 +31,8 @@ class OrderObserver
      */
     public function creating(Order $order)
     {
-        dd($order);
+        $status = $this->repository->findBy("description", OrderStatusesEnums::STATUS_CREATED);
+        $order->status()->associate($status);
     }
 
     /**
@@ -36,7 +43,6 @@ class OrderObserver
      */
     public function updated(Order $order)
     {
-        //
     }
 
     /**

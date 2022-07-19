@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Domains\Order\Jobs;
+namespace App\Domains\Item\Jobs;
 
-use App\Data\Models\Cart;
+use App\Data\Models\Item;
 use App\Interfaces\EloquentRepositoryInterface;
-use Illuminate\Database\Eloquent\Model;
 use Lucid\Units\Job;
 
-class CreateOrderJob extends Job
+class IncreaseQuantityJob extends Job
 {
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(private Cart $cart)
+    public function __construct(private Item $item)
     {
         //
     }
@@ -22,12 +21,12 @@ class CreateOrderJob extends Job
     /**
      * Execute the job.
      *
-     * @return Model
+     * @return void
      */
     public function handle(EloquentRepositoryInterface $repository)
     {
-        return $repository->create([
-            "customer_id" => $this->cart->customer_id,
-        ]);
+        $this->item->quantity++;
+        $this->item->subtotal_item += $this->item->product->price;
+        $repository->save($this->item);
     }
 }

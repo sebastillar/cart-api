@@ -54,7 +54,7 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        "status",
+        "status_id",
         "customer_id",
         "subtotal_amount",
         "shipment_amount",
@@ -73,7 +73,7 @@ class Order extends Model
     ];
 
     protected $dispatchesEvents = [
-        'creating' => OrderCreated::class,
+        "creating" => OrderCreated::class,
     ];
 
     public function customer(): BelongsTo
@@ -89,5 +89,10 @@ class Order extends Model
     public function items(): MorphMany
     {
         return $this->morphMany(Item::class, "checkoutable");
+    }
+
+    public function totalAmount()
+    {
+        return $this->subtotal_amount + $this->shipment_amount + $this->tax_amount;
     }
 }

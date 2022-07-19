@@ -8,14 +8,20 @@ use App\Data\Repositories\ItemRepository;
 use App\Data\Repositories\OrderRepository;
 use App\Data\Repositories\ProductHttpRepository;
 use App\Data\Repositories\ProductRepository;
+use App\Data\Repositories\StatusRepository;
+use App\Domains\Cart\Jobs\AddNewItemJob;
 use App\Domains\Cart\Jobs\CalculateSubtotalJob;
 use App\Domains\Cart\Jobs\FindCartByCustomerJob;
 use App\Domains\Cart\Jobs\RemoveItemFromCartJob;
 use App\Domains\Item\Jobs\CreateItemJob;
+use App\Domains\Item\Jobs\IncreaseQuantityJob;
+use App\Domains\Order\Jobs\AddItemsToOrderJob;
 use App\Domains\Order\Jobs\CreateOrderJob;
+use App\Domains\Product\Jobs\AssociateProductItemJob;
 use App\Domains\Product\Jobs\CreateProductsFromArrayJob;
 use App\Domains\Product\Jobs\FetchProductsByTermJob;
 use App\Domains\Product\Jobs\FindProductByAsinJob;
+use App\Interfaces\EloquentRepositoryInterface;
 use App\Observers\OrderObserver;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,16 +34,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->bindMethod(CreateProductsFromArrayJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(ProductRepository::class));
+        });
+
         $this->app->bindMethod(FindProductByAsinJob::class . "@handle", function ($job, $app) {
             return $job->handle($app->make(ProductRepository::class));
         });
 
         $this->app->bindMethod(FetchProductsByTermJob::class . "@handle", function ($job, $app) {
             return $job->handle($app->make(ProductHttpRepository::class));
-        });
-
-        $this->app->bindMethod(CreateProductsFromArrayJob::class . "@handle", function ($job, $app) {
-            return $job->handle($app->make(ProductRepository::class));
         });
 
         $this->app->bindMethod(FindCartByCustomerJob::class . "@handle", function ($job, $app) {
@@ -59,6 +65,27 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bindMethod(CreateOrderJob::class . "@handle", function ($job, $app) {
             return $job->handle($app->make(OrderRepository::class));
         });
+
+        $this->app->bindMethod(AddItemsToOrderJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(OrderRepository::class));
+        });
+
+        $this->app->bindMethod(AssociateProductItemJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(ProductRepository::class));
+        });
+
+        $this->app->bindMethod(AddNewItemJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(CartRepository::class));
+        });
+
+        $this->app->bindMethod(IncreaseQuantityJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(ItemRepository::class));
+        });
+
+        $this->app
+            ->when(OrderObserver::class)
+            ->needs(EloquentRepositoryInterface::class)
+            ->give(StatusRepository::class);
     }
 
     /**

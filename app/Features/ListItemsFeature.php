@@ -6,6 +6,7 @@ use App\Domains\Cart\Jobs\CalculateSubtotalJob;
 use App\Domains\Cart\Jobs\CheckIsEmptyJob;
 use App\Domains\Cart\Jobs\FindCartByCustomerJob;
 use App\Domains\Cart\Jobs\RespondWithJsonJob;
+use App\Http\Resources\CartResource;
 use Illuminate\Http\Request;
 use Lucid\Units\Feature;
 
@@ -21,10 +22,7 @@ class ListItemsFeature extends Feature
 
         $results = [
             "message" => "Showing items in the cart.",
-            "data" => [
-                "items" => $cartItems["products"],
-                "subtotal_amount" => $cart->subtotal_amount,
-            ],
+            "data" => new CartResource($cart),
         ];
 
         $isEmpty = $this->run(new CheckIsEmptyJob($cart));

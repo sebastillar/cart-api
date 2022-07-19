@@ -8,11 +8,6 @@ use Lucid\Units\Job;
 
 class CreateProductsFromArrayJob extends Job
 {
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
     public function __construct(private array $products, private string $maxQtyToCreate)
     {
         //

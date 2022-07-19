@@ -11,7 +11,7 @@ class OrderRepository implements EloquentRepositoryInterface
 {
     public function update(Model $model, array $params): Model
     {
-        // TODO: Implement update() method.
+        return tap($model)->update($params);
     }
 
     public function find(int $id): Model
@@ -29,7 +29,7 @@ class OrderRepository implements EloquentRepositoryInterface
         // TODO: Implement findAll() method.
     }
 
-    public function save(array $model): bool
+    public function save(Model $model): bool
     {
         // TODO: Implement save() method.
     }

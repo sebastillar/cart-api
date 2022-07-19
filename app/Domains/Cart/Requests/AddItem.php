@@ -25,6 +25,12 @@ class AddItem extends FormRequest
     {
         return [
             "customer_id" => "required|integer|exists:customers,id",
+            "item.quantity" => "required|integer|min:1",
+            "item.product" => "required",
+            "item.product.name" => "required|string",
+            "item.product.asin" => "required|string",
+            "item.product.price" => "required|numeric|min:1",
+            "item.product.link" => "required|url",
         ];
     }
 

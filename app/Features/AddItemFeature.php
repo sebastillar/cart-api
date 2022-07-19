@@ -2,62 +2,54 @@
 
 namespace App\Features;
 
+use App\Domains\Cart\Jobs\AddNewItemJob;
 use App\Domains\Cart\Jobs\CalculateSubtotalJob;
 use App\Domains\Cart\Jobs\CheckIsEmptyJob;
 use App\Domains\Cart\Jobs\FindCartByCustomerJob;
 use App\Domains\Cart\Jobs\RespondWithJsonJob;
 use App\Domains\Cart\Requests\AddItem;
-use App\Domains\Item\DTOs\ItemDTO;
 use App\Domains\Item\Jobs\CreateItemJob;
-use App\Domains\Product\DTOs\FetchByTermDTO;
-use App\Domains\Product\Jobs\FindProductByAsinJob;
-use App\Operations\FetchProductsFromExternalServiceOperation;
-use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domains\Item\Jobs\IncreaseQuantityJob;
+use App\Domains\Product\Jobs\AssociateProductItemJob;
+use App\Http\Resources\CartResource;
+use App\Operations\FindOrCreateProductOperation;
 use Lucid\Units\Feature;
-use Illuminate\Support\Facades\Response;
 
 class AddItemFeature extends Feature
 {
     public function handle(AddItem $request)
     {
         $params = $request->validated();
+        $qty = $params["item"]["quantity"];
+        $customerId = $params["customer_id"];
 
-        $cart = $this->run(new FindCartByCustomerJob($params["customer_id"]));
+        $cart = $this->run(new FindCartByCustomerJob($customerId));
 
-        try {
-            $product = $this->run(new FindProductByAsinJob($params["item"]["product"]["asin"]));
-        } catch (Exception $exception) {
-            if ($exception instanceof ModelNotFoundException) {
-                $product = $this->retrieveProductFromExternalAPi($params, $request);
-            }
+        $product = $this->run(new FindOrCreateProductOperation($params, $request));
+
+        $message = "This item already was in the cart.";
+
+        if (!$cart->items->contains("product_id", $product->id)) {
+            $item = $this->run(new CreateItemJob($qty));
+
+            $productWithItem = $this->run(new AssociateProductItemJob($product, $item));
+
+            $cartWithItem = $this->run(new AddNewItemJob($cart, $item));
+
+            $message = "This item was added to the cart.";
+        } else {
+            $this->run(new IncreaseQuantityJob($cart->items->where("product_id", $product->id)->first()));
         }
 
-        $itemDTO = new ItemDTO($params["item"]["quantity"], $product, $cart);
-        $item = $this->run(new CreateItemJob(item: $itemDTO));
-
-        $this->run(new CalculateSubtotalJob($cart));
+        $cart = $this->run(new CalculateSubtotalJob($cart));
 
         $results = [
-            "message" => $item->message(),
-            "data" => $item->toArray(),
+            "message" => $message,
+            "data" => new CartResource($cart),
         ];
 
         $isEmpty = $this->run(new CheckIsEmptyJob($cart));
 
         return $this->run(new RespondWithJsonJob($cart, $results, $isEmpty));
-    }
-
-    private function retrieveProductFromExternalAPi(array $params, AddItem $request)
-    {
-        $params["rapid_api_key"] = $request->header("X-RapidAPI-Key");
-        $params["rapid_api_host"] = $request->header("X-RapidAPI-Host");
-        $params["term"] = $params["item"]["product"]["name"];
-
-        $fetchByTerm = FetchByTermDTO::fromArray($params);
-
-        $this->run(new FetchProductsFromExternalServiceOperation($fetchByTerm));
-
-        return $this->run(new FindProductByAsinJob($params["item"]["product"]["asin"]));
     }
 }

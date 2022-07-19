@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $quantity
  * @property int $product_id
+ * @property float $subtotal_item
  * @property int $checkoutable_id
  * @property string $checkoutable_type
  * @property Carbon|null $created_at
@@ -32,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Item whereId($value)
  * @method static Builder|Item whereProductId($value)
  * @method static Builder|Item whereQuantity($value)
+ * @method static Builder|Item whereSubtotalItem($value)
  * @method static Builder|Item whereUpdatedAt($value)
  * @mixin Eloquent
  */
@@ -39,9 +41,9 @@ class Item extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $table = "items";
-
-    protected $fillable = ["quantity", "product_id", "checkoutable_id", "checkoutable_type"];
+    protected $fillable = ["quantity", "product_id", "checkoutable_id", "checkoutable_type", "subtotal_item"];
 
     protected $dispatchesEvents = [
         "saved" => ItemsAddedOrRemoved::class,
