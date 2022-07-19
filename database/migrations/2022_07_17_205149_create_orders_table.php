@@ -30,6 +30,7 @@ class CreateOrdersTable extends Migration
             $table->float("shipment_amount")->default(0);
             $table->float("tax_amount")->default(0);
             $table->float("total_amount")->default(0);
+            $table->unsignedBigInteger("payment_status")->default(0);
             $table->json("billing_data")->nullable();
             $table->json("shipment_data")->nullable();
             $table->json("payment_data")->nullable();

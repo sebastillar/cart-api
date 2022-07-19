@@ -22,12 +22,13 @@ class AddItemsToOrderJob extends Job
     /**
      * Execute the job.
      *
-     * @return void
+     * @return Order
      */
     public function handle(EloquentRepositoryInterface $repository)
     {
         $itemsWithProducts = $this->cart->items()->get();
         $this->order->items()->saveMany($itemsWithProducts);
         $this->order->update(["subtotal_amount" => $this->cart->subtotal_amount]);
+        return $this->order;
     }
 }

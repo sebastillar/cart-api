@@ -44,6 +44,7 @@ class Item extends Model
     public $timestamps = false;
     protected $table = "items";
     protected $fillable = ["quantity", "product_id", "checkoutable_id", "checkoutable_type", "subtotal_item"];
+    protected $hidden = ["checkoutable_id", "checkoutable_type", "email"];
 
     protected $dispatchesEvents = [
         "saved" => ItemsAddedOrRemoved::class,

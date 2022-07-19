@@ -63,6 +63,7 @@ class Order extends Model
         "payment_data",
         "shipment_data",
         "billing_data",
+        "payment_status",
     ];
 
     protected $casts = [

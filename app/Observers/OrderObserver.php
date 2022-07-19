@@ -5,6 +5,9 @@ namespace App\Observers;
 use App\Data\Models\Order;
 use App\Domains\Status\Enums\OrderStatusesEnums;
 use App\Interfaces\EloquentRepositoryInterface;
+use App\Mail\OrderCompletedMail;
+use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Mail;
 
 class OrderObserver
 {
@@ -41,8 +44,12 @@ class OrderObserver
      * @param Order $order
      * @return void
      */
-    public function updated(Order $order)
+    public function updating(Order $order)
     {
+        $order->total_amount = $order->totalAmount();
+        if ($order->status->toArray()["description"] === OrderStatusesEnums::STATUS_COMPLETED) {
+            Mail::to(env("MAIL_TO"))->send(new OrderCompletedMail());
+        }
     }
 
     /**
