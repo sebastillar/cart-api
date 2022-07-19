@@ -42,7 +42,7 @@ class AddItemFeature extends Feature
             "message" => $item->message(),
             "data" => $item->toArray(),
         ];
-        
+
         $isEmpty = $this->run(new CheckIsEmptyJob($cart));
 
         return $this->run(new RespondWithJsonJob($cart, $results, $isEmpty));

@@ -4,7 +4,7 @@ namespace App\Domains\Cart\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddItem extends FormRequest
+class Checkout extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class AddItem extends FormRequest
     public function rules()
     {
         return [
-            "customer_id" => "required|integer|exists:customers,id",
+            //
         ];
     }
 

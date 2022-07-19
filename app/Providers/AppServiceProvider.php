@@ -2,18 +2,21 @@
 
 namespace App\Providers;
 
+use App\Data\Models\Order;
 use App\Data\Repositories\CartRepository;
 use App\Data\Repositories\ItemRepository;
+use App\Data\Repositories\OrderRepository;
 use App\Data\Repositories\ProductHttpRepository;
 use App\Data\Repositories\ProductRepository;
 use App\Domains\Cart\Jobs\CalculateSubtotalJob;
 use App\Domains\Cart\Jobs\FindCartByCustomerJob;
 use App\Domains\Cart\Jobs\RemoveItemFromCartJob;
 use App\Domains\Item\Jobs\CreateItemJob;
+use App\Domains\Order\Jobs\CreateOrderJob;
 use App\Domains\Product\Jobs\CreateProductsFromArrayJob;
 use App\Domains\Product\Jobs\FetchProductsByTermJob;
 use App\Domains\Product\Jobs\FindProductByAsinJob;
-use App\Listeners\CartRetrievedListener;
+use App\Observers\OrderObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -52,6 +55,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bindMethod(RemoveItemFromCartJob::class . "@handle", function ($job, $app) {
             return $job->handle($app->make(ItemRepository::class));
         });
+
+        $this->app->bindMethod(CreateOrderJob::class . "@handle", function ($job, $app) {
+            return $job->handle($app->make(OrderRepository::class));
+        });
     }
 
     /**
@@ -61,6 +68,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Order::observe(OrderObserver::class);
     }
 }

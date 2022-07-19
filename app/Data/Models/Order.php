@@ -2,6 +2,7 @@
 
 namespace App\Data\Models;
 
+use App\Events\OrderCreated;
 use Barryvdh\LaravelIdeHelper\Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -52,12 +53,27 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["status", "customer_id", "subtotal_amount", "shipment_amount", "tax_amount", "total_amount"];
+    protected $fillable = [
+        "status",
+        "customer_id",
+        "subtotal_amount",
+        "shipment_amount",
+        "tax_amount",
+        "total_amount",
+        "payment_data",
+        "shipment_data",
+        "billing_data",
+    ];
 
     protected $casts = [
         "shipment_data" => "array",
         "billing_data" => "array",
         "payment_data" => "array",
+        "items" => "array",
+    ];
+
+    protected $dispatchesEvents = [
+        'creating' => OrderCreated::class,
     ];
 
     public function customer(): BelongsTo
